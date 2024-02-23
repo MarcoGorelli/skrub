@@ -2,7 +2,6 @@
 from collections import Counter
 
 from skrub import _utils
-from skrub._dataframe._namespace import get_df_namespace
 
 from narwhals import to_polars_api, to_original_object
 

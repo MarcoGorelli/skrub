@@ -10,6 +10,8 @@ except ImportError:
 
 from .._dispatch import dispatch
 
+from narwhals import to_polars_api, to_original_object
+
 __all__ = [
     #
     # Inspecting containers' type and module
@@ -355,18 +357,8 @@ def _name_polars(col):
     return col.name
 
 
-@dispatch
 def column_names(df):
-    raise NotImplementedError()
-
-
-@column_names.specialize("pandas")
-def _column_names_pandas(df):
-    return list(df.columns.values)
-
-
-@column_names.specialize("polars")
-def _column_names_polars(df):
+    df, _ = to_polars_api(df, version='0.20')
     return df.columns
 
 
@@ -385,20 +377,10 @@ def _rename_polars(col, new_name):
     return col.rename(new_name)
 
 
-@dispatch
 def set_column_names(df, new_column_names):
-    raise NotImplementedError()
-
-
-@set_column_names.specialize("pandas")
-def _set_column_names_pandas(df, new_column_names):
-    return df.set_axis(new_column_names, axis=1)
-
-
-@set_column_names.specialize("polars")
-def _set_column_names_polars(df, new_column_names):
-    return df.rename(dict(zip(df.columns, new_column_names)))
-
+    df, _ = to_polars_api(df, version='0.20')
+    df = df.rename(dict(zip(df.columns, new_column_names)))
+    return to_original_object(df.collect())
 
 #
 # Inspecting dtypes and casting
