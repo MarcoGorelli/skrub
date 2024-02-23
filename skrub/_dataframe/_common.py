@@ -380,7 +380,7 @@ def _rename_polars(col, new_name):
 def set_column_names(df, new_column_names):
     df, _ = to_polars_api(df, version='0.20')
     df = df.rename(dict(zip(df.columns, new_column_names)))
-    return to_original_object(df.collect())
+    return to_original_object(df)
 
 #
 # Inspecting dtypes and casting
