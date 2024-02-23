@@ -4,6 +4,7 @@ from collections import Counter
 from skrub import _utils
 from skrub._dataframe._namespace import get_df_namespace
 
+from narwhals import to_polars_api, to_original_object
 
 def check_key(
     main_key,
@@ -149,5 +150,5 @@ def check_column_name_duplicates(
 
 
 def add_column_name_suffix(dataframe, suffix):
-    ns, _ = get_df_namespace(dataframe)
-    return ns.rename_columns(dataframe, f"{{}}{suffix}".format)
+    df, pl = to_polars_api(dataframe, version='0.20')
+    return to_original_object(df.select([pl.col(col).alias(f"{col}{suffix}") for col in df.columns]))
