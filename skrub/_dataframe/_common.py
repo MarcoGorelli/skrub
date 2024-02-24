@@ -10,7 +10,7 @@ except ImportError:
 
 from .._dispatch import dispatch
 
-from narwhals import translate_frame, translate_series
+from narwhals import translate_frame, translate_series, translate_any
 
 __all__ = [
     #
@@ -183,33 +183,13 @@ def _is_column_polars(obj):
 #
 
 
-@dispatch
 def to_numpy(obj):
-    raise NotImplementedError()
-
-
-@to_numpy.specialize("pandas", argument_type="Column")
-def _to_numpy_pandas(obj):
+    obj, _ = translate_series(obj)
     return obj.to_numpy()
 
 
-@to_numpy.specialize("polars", argument_type="Column")
-def _to_numpy_polars(obj):
-    return obj.to_numpy()
-
-
-@dispatch
 def to_pandas(obj):
-    raise NotImplementedError()
-
-
-@to_pandas.specialize("pandas")
-def _to_pandas_pandas(obj):
-    return obj
-
-
-@to_pandas.specialize("polars")
-def _to_pandas_polars(obj):
+    obj, _ = translate_any(obj)
     return obj.to_pandas()
 
 

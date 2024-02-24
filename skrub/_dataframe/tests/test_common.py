@@ -56,7 +56,7 @@ def test_is_column(df_module):
 
 
 def test_to_numpy(df_module, example_data_dict):
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError):
         ns.to_numpy(df_module.example_dataframe)
     array = ns.to_numpy(ns.col(df_module.example_dataframe, "int-col"))
     assert array.dtype == float
@@ -82,7 +82,7 @@ def test_to_pandas(df_module, all_dataframe_modules):
         ns.to_pandas(df_module.example_column), pd_module.example_column
     )
 
-    with pytest.raises(NotImplementedError):
+    with pytest.raises(TypeError):
         ns.to_pandas(np.arange(3))
 
 
