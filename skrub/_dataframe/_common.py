@@ -10,7 +10,7 @@ except ImportError:
 
 from .._dispatch import dispatch
 
-from narwhals import to_polars_api, to_original_object
+from narwhals import translate_frame, translate_series
 
 __all__ = [
     #
@@ -342,23 +342,12 @@ def _shape_polars(obj):
     return obj.shape
 
 
-@dispatch
 def name(col):
-    raise NotImplementedError()
-
-
-@name.specialize("pandas")
-def _name_pandas(col):
-    return col.name
-
-
-@name.specialize("polars")
-def _name_polars(col):
-    return col.name
-
+    ser, _ = translate_series(col)
+    return ser.name
 
 def column_names(df):
-    df, _ = to_polars_api(df, version='0.20')
+    df, _ = translate_frame(df)
     return df.columns
 
 
@@ -378,9 +367,9 @@ def _rename_polars(col, new_name):
 
 
 def set_column_names(df, new_column_names):
-    df, _ = to_polars_api(df, version='0.20')
+    df, _ = translate_frame(df)
     df = df.rename(dict(zip(df.columns, new_column_names)))
-    return to_original_object(df)
+    return df.to_native()
 
 #
 # Inspecting dtypes and casting

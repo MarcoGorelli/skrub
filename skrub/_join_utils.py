@@ -3,7 +3,7 @@ from collections import Counter
 
 from skrub import _utils
 
-from narwhals import to_polars_api, to_original_object
+from narwhals import translate_frame
 
 def check_key(
     main_key,
